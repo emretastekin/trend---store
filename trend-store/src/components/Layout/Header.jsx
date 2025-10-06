@@ -4,7 +4,7 @@ import HeaderCartButton from "./HeaderCartButton";
 const Header = () => {
     return(
         <header className="header">
-            <h1>Trend Store</h1>
+            <h1>Tend Store</h1>
             <HeaderCartButton />
         </header>
     )
