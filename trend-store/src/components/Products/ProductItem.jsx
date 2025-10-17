@@ -8,10 +8,8 @@ import { CartContext } from "../../context/CartProvider";
 const ProductItem = ({ product }) => {
 
     const { name, description, img, price } = product;
-    const {items ,addItem, totalAmount} = useContext(CartContext);
+    const  {addItem} = useContext(CartContext);
     
-    console.log(items, totalAmount);
-
     return (
         <Card>
             <img src={img} alt={name} />
