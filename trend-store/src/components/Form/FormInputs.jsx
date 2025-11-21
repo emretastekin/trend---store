@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./FormInputs.css";
+import useHttp from "../../hooks/use-http";
 
 
 const initialValues = {
@@ -9,8 +10,10 @@ const initialValues = {
   category: "",
 };
 
-const FormInputs = ({ fetchProductsHandler }) => {
+const FormInputs = ({ onAddProduct }) => {
   const [inputValues, setInputValues] = useState(initialValues);
+  const { isLoading, error, sendRequest: sendProductRequest } = useHttp();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,25 +23,18 @@ const FormInputs = ({ fetchProductsHandler }) => {
       img: image,
     }
 
-    console.log(newData);
-    try {
-      const response = await fetch("https://my-pos-application-api.onrender.com/api/products/create-product", {
-        method: "POST",
-        body: JSON.stringify(inputValues),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    sendProductRequest({
+      url: "https://my-pos-application-api.onrender.com/api/products/create-product",
+      method: requestConfig.method ? requestConfig.method : "POST",
+      body: newData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+      createProduct(newData)
+    )
 
-      if (response.status === 200) {
-        fetchProductsHandler();
-        setInputValues(initialValues);
-      }
-
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,6 +43,15 @@ const FormInputs = ({ fetchProductsHandler }) => {
       [name]: value,
     }));
   };
+
+
+  const createProduct = () => {
+    const generatedId = inputValues.title;
+    const createProduct = { id: generatedId, ...inputValues};
+
+    onAddProduct(createProduct);
+    setInputValues(initialValues);
+  }
 
   return (
     <form className="product-form" onSubmit={handleSubmit}>
